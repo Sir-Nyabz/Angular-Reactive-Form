@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl,FormGroup,ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder,Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up',
@@ -9,7 +9,17 @@ import { FormControl,FormGroup,ReactiveFormsModule } from '@angular/forms';
 export class SignUpComponent implements OnInit {
 
 
-  userForm : FormGroup
+  userForm =this.fb.group({
+    username:["",[Validators.required,Validators.minLength(3)]],
+    password:["",Validators.required],
+    confirmPassword:["",Validators.required],
+    address:this.fb.group({
+      street:[""],
+      city:[""],
+      state:[""],
+      zip:[""]
+    })
+  })
   stateOptions:string[]=['PA','QH','MI']
 
   userAddressInfo:any={
@@ -19,21 +29,10 @@ export class SignUpComponent implements OnInit {
     zip:'+233'
 }
 
-  constructor() { }
+  constructor(private fb:FormBuilder) { }
 
   ngOnInit() {
-    this.userForm=new FormGroup({
-      username : new FormControl(""),
-      password : new FormControl(""),
-      confirmPassword : new FormControl(""),
-
-      address:new FormGroup({
-        street : new FormControl(""),
-      city : new FormControl(""),
-      state : new FormControl(""),
-      zip : new FormControl("")
-      })
-    })
+  
   }
 
   autoFillAddress(){
