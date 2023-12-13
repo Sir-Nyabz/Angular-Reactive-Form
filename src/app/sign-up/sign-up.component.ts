@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder,Validators } from '@angular/forms';
+import { CustomValidationService } from '../services/custom-validation.service';
+
 
 @Component({
   selector: 'app-sign-up',
@@ -10,7 +12,7 @@ export class SignUpComponent implements OnInit {
 
 
   userForm =this.fb.group({
-    username:["",[Validators.required,Validators.minLength(3)]],
+    username:["",[Validators.required,Validators.minLength(3)],this.customValidator.validateUsernameNotTaken.bind(this.customValidator)],
     password:["",Validators.required],
     confirmPassword:["",Validators.required],
     address:this.fb.group({
@@ -19,7 +21,24 @@ export class SignUpComponent implements OnInit {
       state:[""],
       zip:[""]
     })
-  })
+  },
+  {
+    validator:this.customValidator.passwordMatchValidator("password","confirmPassword")
+  }
+  )
+
+  get username(){
+    return this.userForm.get("username")
+  }
+
+  get password(){
+    return this.userForm.get("password")
+  }
+
+  get confirmPassword(){
+    return this.userForm.get("confirmPassword")
+  }
+
   stateOptions:string[]=['PA','QH','MI']
 
   userAddressInfo:any={
@@ -29,7 +48,7 @@ export class SignUpComponent implements OnInit {
     zip:'+233'
 }
 
-  constructor(private fb:FormBuilder) { }
+  constructor(private fb:FormBuilder, private customValidator:CustomValidationService) { }
 
   ngOnInit() {
   
